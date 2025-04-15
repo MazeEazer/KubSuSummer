@@ -7,6 +7,7 @@ import AppContext from "./context"
 import Home from "./pages/Home"
 import Favorites from "./pages/Favorites"
 import Orders from "./pages/Orders"
+import Product from "./pages/Product"
 
 function App() {
   const [items, setItems] = useState([])
@@ -16,17 +17,71 @@ function App() {
   const [cartOpened, setCartOpened] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
 
-  // ⚡ Заменяем axios на локальные данные
   useEffect(() => {
-    const localItems = Array.from({ length: 10 }, (_, i) => ({
-      id: i + 1,
-      title: `Кроссовки №${i + 1}`,
-      price: 100 + i * 10,
-      imageUrl: `/img/${i + 1}.jpg`,
-      parentId: i + 1,
-    }))
+    const sneakers = [
+      {
+        id: 1,
+        title: "Мужские Кроссовки Nike Blazer Mid Suede",
+        imageUrl: "/img/sneakers/1.jpg",
+        price: 12999,
+      },
+      {
+        id: 2,
+        title: "Мужские Кроссовки Nike Air Max 270",
+        imageUrl: "/img/sneakers/2.jpg",
+        price: 15600,
+      },
+      {
+        id: 3,
+        title: "Мужские Кроссовки Nike Blazer Mid Suede",
+        imageUrl: "/img/sneakers/3.jpg",
+        price: 8499,
+      },
+      {
+        id: 4,
+        title: "Кроссовки Puma X Aka Boku Future Rider",
+        imageUrl: "/img/sneakers/4.jpg",
+        price: 8999,
+      },
+      {
+        id: 5,
+        title: "Мужские Кроссовки Under Armour Curry 8",
+        imageUrl: "/img/sneakers/5.jpg",
+        price: 15199,
+      },
+      {
+        id: 6,
+        title: "Мужские Кроссовки Nike Kyrie 7",
+        imageUrl: "/img/sneakers/6.jpg",
+        price: 11299,
+      },
+      {
+        id: 7,
+        title: "Мужские Кроссовки Jordan Air Jordan 11",
+        imageUrl: "/img/sneakers/7.jpg",
+        price: 10799,
+      },
+      {
+        id: 8,
+        title: "Мужские Кроссовки Nike LeBron XVIII",
+        imageUrl: "/img/sneakers/8.jpg",
+        price: 16499,
+      },
+      {
+        id: 9,
+        title: "Мужские Кроссовки Nike Lebron XVIII Low",
+        imageUrl: "/img/sneakers/9.jpg",
+        price: 13999,
+      },
+      {
+        id: 10,
+        title: "Мужские Кроссовки Nike Blazer Mid Suede",
+        imageUrl: "/img/sneakers/10.jpg",
+        price: 8499,
+      },
+    ]
 
-    setItems(localItems)
+    setItems(sneakers)
     setIsLoading(false)
   }, [])
 
@@ -119,6 +174,7 @@ function App() {
           />
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/orders" element={<Orders />} />
+          <Route path="/product/:id" element={<Product />} />
         </Routes>
       </div>
     </AppContext.Provider>

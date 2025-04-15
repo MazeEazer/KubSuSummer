@@ -1,9 +1,10 @@
-import React from 'react';
-import ContentLoader from 'react-content-loader';
+import React from "react"
+import { useNavigate } from "react-router-dom"
+import ContentLoader from "react-content-loader"
 
-import AppContext from '../../context';
+import AppContext from "../../context"
 
-import styles from './Card.module.scss';
+import styles from "./Card.module.scss"
 
 function Card({
   id,
@@ -15,21 +16,28 @@ function Card({
   favorited = false,
   loading = false,
 }) {
-  const { isItemAdded } = React.useContext(AppContext);
-  const [isFavorite, setIsFavorite] = React.useState(favorited);
-  const obj = { id, parentId: id, title, imageUrl, price };
+  const navigate = useNavigate()
+  const { isItemAdded } = React.useContext(AppContext)
+  const [isFavorite, setIsFavorite] = React.useState(favorited)
+  const obj = { id, parentId: id, title, imageUrl, price }
 
-  const onClickPlus = () => {
-    onPlus(obj);
-  };
+  const onClickPlus = (e) => {
+    e.stopPropagation()
+    onPlus(obj)
+  }
 
-  const onClickFavorite = () => {
-    onFavorite(obj);
-    setIsFavorite(!isFavorite);
-  };
+  const onClickFavorite = (e) => {
+    e.stopPropagation()
+    onFavorite(obj)
+    setIsFavorite(!isFavorite)
+  }
+
+  const onClickCard = () => {
+    navigate(`/product/${id}`)
+  }
 
   return (
-    <div className={styles.card}>
+    <div className={styles.card} onClick={onClickCard}>
       {loading ? (
         <ContentLoader
           speed={2}
@@ -37,7 +45,8 @@ function Card({
           height={250}
           viewBox="0 0 155 265"
           backgroundColor="#f3f3f3"
-          foregroundColor="#ecebeb">
+          foregroundColor="#ecebeb"
+        >
           <rect x="1" y="0" rx="10" ry="10" width="155" height="155" />
           <rect x="0" y="167" rx="5" ry="5" width="155" height="15" />
           <rect x="0" y="187" rx="5" ry="5" width="100" height="15" />
@@ -48,7 +57,10 @@ function Card({
         <>
           {onFavorite && (
             <div className={styles.favorite} onClick={onClickFavorite}>
-              <img src={isFavorite ? 'img/liked.svg' : 'img/unliked.svg'} alt="Unliked" />
+              <img
+                src={isFavorite ? "img/liked.svg" : "img/unliked.svg"}
+                alt="Unliked"
+              />
             </div>
           )}
           <img width="100%" height={135} src={imageUrl} alt="Sneakers" />
@@ -62,7 +74,9 @@ function Card({
               <img
                 className={styles.plus}
                 onClick={onClickPlus}
-                src={isItemAdded(id) ? 'img/btn-checked.svg' : 'img/btn-plus.svg'}
+                src={
+                  isItemAdded(id) ? "img/btn-checked.svg" : "img/btn-plus.svg"
+                }
                 alt="Plus"
               />
             )}
@@ -70,7 +84,7 @@ function Card({
         </>
       )}
     </div>
-  );
+  )
 }
 
-export default Card;
+export default Card
