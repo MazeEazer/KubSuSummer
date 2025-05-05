@@ -1,10 +1,19 @@
-import React from "react"
-import { Link } from "react-router-dom"
-
+import React, { useContext } from "react"
+import { Link, useNavigate } from "react-router-dom"
 import { useCart } from "../hooks/useCart"
+import AppContext from "../context"
 
 function Header(props) {
   const { totalPrice } = useCart()
+  const { isAuthenticated, setIsAuthenticated } = useContext(AppContext)
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    localStorage.removeItem("isAuthenticated")
+    localStorage.removeItem("user")
+    setIsAuthenticated(false)
+    navigate("/")
+  }
 
   return (
     <header className="d-flex justify-between align-center">
@@ -12,8 +21,8 @@ function Header(props) {
         <div className="d-flex align-center">
           <img width={40} height={40} src="/img/logo.png" alt="Logotype" />
           <div>
-            <h3 className="text-uppercase">React Sneakers</h3>
-            <p className="opacity-5">Магазин лучших кроссовок</p>
+            <h3 className="text-uppercase">Space Sneakers</h3>
+            <p className="opacity-5">Магазин космических кроссовок</p>
           </div>
         </div>
       </Link>
@@ -28,14 +37,30 @@ function Header(props) {
           </Link>
         </li>
         <li>
-          <Link to="/orders">
-            <img
-              width={18}
-              height={18}
-              src="/img/user.svg"
-              alt="Пользователь"
-            />
-          </Link>
+          {isAuthenticated ? (
+            <div className="d-flex align-center">
+              <Link to="/orders" className="mr-20">
+                <img
+                  width={18}
+                  height={18}
+                  src="/img/user.svg"
+                  alt="Пользователь"
+                />
+              </Link>
+              <button onClick={handleLogout} className="logout-button">
+                Выйти
+              </button>
+            </div>
+          ) : (
+            <Link to="/auth">
+              <img
+                width={18}
+                height={18}
+                src="/img/user.svg"
+                alt="Пользователь"
+              />
+            </Link>
+          )}
         </li>
       </ul>
     </header>

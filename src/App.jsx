@@ -1,13 +1,15 @@
 import React, { useCallback, useMemo, useEffect, useState } from "react"
-import { Route, Routes } from "react-router-dom"
+import { Route, Routes, Navigate, useNavigate } from "react-router-dom"
 import Header from "./components/Header"
 import Drawer from "./components/Drawer"
+import ThemeToggle from "./components/ThemeToggle"
 import AppContext from "./context"
 
 import Home from "./pages/Home"
 import Favorites from "./pages/Favorites"
 import Orders from "./pages/Orders"
 import Product from "./pages/Product"
+import Auth from "./pages/Auth"
 
 function App() {
   const [items, setItems] = useState([])
@@ -16,6 +18,15 @@ function App() {
   const [searchValue, setSearchValue] = useState("")
   const [cartOpened, setCartOpened] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+
+  useEffect(() => {
+    // Check if user is authenticated
+    const auth = localStorage.getItem("isAuthenticated")
+    if (auth === "true") {
+      setIsAuthenticated(true)
+    }
+  }, [])
 
   useEffect(() => {
     const sneakers = [
@@ -24,60 +35,100 @@ function App() {
         title: "Мужские Кроссовки Nike Blazer Mid Suede",
         imageUrl: "/img/sneakers/1.jpg",
         price: 12999,
+        gender: "male",
+        category: "casual",
+        season: "all",
+        color: "white",
       },
       {
         id: 2,
         title: "Мужские Кроссовки Nike Air Max 270",
         imageUrl: "/img/sneakers/2.jpg",
         price: 15600,
+        gender: "male",
+        category: "sport",
+        season: "summer",
+        color: "black",
       },
       {
         id: 3,
         title: "Мужские Кроссовки Nike Blazer Mid Suede",
         imageUrl: "/img/sneakers/3.jpg",
         price: 8499,
+        gender: "male",
+        category: "casual",
+        season: "winter",
+        color: "red",
       },
       {
         id: 4,
         title: "Кроссовки Puma X Aka Boku Future Rider",
         imageUrl: "/img/sneakers/4.jpg",
         price: 8999,
+        gender: "male",
+        category: "sport",
+        season: "summer",
+        color: "blue",
       },
       {
         id: 5,
         title: "Мужские Кроссовки Under Armour Curry 8",
         imageUrl: "/img/sneakers/5.jpg",
         price: 15199,
+        gender: "female",
+        category: "sport",
+        season: "all",
+        color: "black",
       },
       {
         id: 6,
         title: "Мужские Кроссовки Nike Kyrie 7",
         imageUrl: "/img/sneakers/6.jpg",
         price: 11299,
+        gender: "male",
+        category: "sport",
+        season: "summer",
+        color: "white",
       },
       {
         id: 7,
         title: "Мужские Кроссовки Jordan Air Jordan 11",
         imageUrl: "/img/sneakers/7.jpg",
         price: 10799,
+        gender: "male",
+        category: "sport",
+        season: "all",
+        color: "red",
       },
       {
         id: 8,
         title: "Мужские Кроссовки Nike LeBron XVIII",
         imageUrl: "/img/sneakers/8.jpg",
         price: 16499,
+        gender: "male",
+        category: "sport",
+        season: "winter",
+        color: "black",
       },
       {
         id: 9,
         title: "Мужские Кроссовки Nike Lebron XVIII Low",
         imageUrl: "/img/sneakers/9.jpg",
         price: 13999,
+        gender: "male",
+        category: "casual",
+        season: "summer",
+        color: "blue",
       },
       {
         id: 10,
         title: "Мужские Кроссовки Nike Blazer Mid Suede",
         imageUrl: "/img/sneakers/10.jpg",
         price: 8499,
+        gender: "male",
+        category: "casual",
+        season: "all",
+        color: "white",
       },
     ]
 
@@ -140,13 +191,24 @@ function App() {
       onAddToCart,
       setCartOpened,
       setCartItems,
+      isAuthenticated,
+      setIsAuthenticated,
     }),
-    [items, cartItems, favorites, isItemAdded, onAddToFavorite, onAddToCart]
+    [
+      items,
+      cartItems,
+      favorites,
+      isItemAdded,
+      onAddToFavorite,
+      onAddToCart,
+      isAuthenticated,
+    ]
   )
 
   return (
     <AppContext.Provider value={contextValue}>
       <div className="wrapper clear">
+        <ThemeToggle />
         <Drawer
           items={cartItems}
           onClose={() => setCartOpened(false)}
@@ -173,8 +235,18 @@ function App() {
             }
           />
           <Route path="/favorites" element={<Favorites />} />
-          <Route path="/orders" element={<Orders />} />
+          <Route
+            path="/orders"
+            element={
+              isAuthenticated ? (
+                <Orders />
+              ) : (
+                <Navigate to="/auth" state={{ from: "/orders" }} replace />
+              )
+            }
+          />
           <Route path="/product/:id" element={<Product />} />
+          <Route path="/auth" element={<Auth />} />
         </Routes>
       </div>
     </AppContext.Provider>

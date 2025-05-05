@@ -1,3 +1,59 @@
+.drawer {
+  position: fixed;
+  right: 0; /* Изменено с left на right */
+  top: 0;
+  width: 420px;
+  height: 100%;
+  background: var(--neon-surface);
+  box-shadow: var(--neon-glow-strong);
+  padding: 30px;
+  transform: translateX(100%); /* Сдвигаем вправо за пределы экрана */
+  transition: transform 0.3s ease-in-out;
+  z-index: 1000;
+  color: var(--neon-text);
+
+  &.visible {
+    transform: translateX(0); /* При открытии сдвигаем обратно */
+  }
+
+  .items {
+    flex: 1;
+    overflow: auto;
+    margin-bottom: 40px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--neon-primary) var(--neon-border);
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: var(--neon-border);
+      border-radius: 3px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--neon-primary);
+      border-radius: 3px;
+    }
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 24px;
+    transition: transform 0.2s ease;
+    color: var(--neon-text);
+
+    &:hover {
+      transform: scale(1.02);
+    }
+
+    img {
+      filter: invert(var(--icon-invert));
+    }
+  }
+}
+
 .overlay {
   position: fixed;
   left: 0;
@@ -21,50 +77,12 @@
   }
 }
 
-.drawer {
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  width: 420px;
-  height: 100%;
-  right: 0;
-  background: #ffffff;
-  box-shadow: -10px 4px 24px rgba(0, 0, 0, 0.1);
-  padding: 30px;
-  transform: translateX(100%);
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+:root {
+  --icon-invert: 0;
+}
 
-  .items {
-    flex: 1;
-    overflow: auto;
-    margin-bottom: 40px;
-    scrollbar-width: thin;
-    scrollbar-color: #9dd558 #f3f3f3;
-
-    &::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    &::-webkit-scrollbar-track {
-      background: #f3f3f3;
-      border-radius: 3px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background-color: #9dd558;
-      border-radius: 3px;
-    }
-  }
-
-  h2 {
-    margin: 0;
-    font-size: 24px;
-    transition: transform 0.2s ease;
-
-    &:hover {
-      transform: scale(1.02);
-    }
-  }
+[data-theme="dark"] {
+  --icon-invert: 1;
 }
 
 @media (max-width: 768px) {

@@ -1,7 +1,8 @@
-import React from "react"
+import React, { useState, useEffect } from "react"
 import Card from "../components/Card"
 
 function Home({
+  items,
   searchValue,
   setSearchValue,
   onChangeSearchInput,
@@ -9,84 +10,43 @@ function Home({
   onAddToCart,
   isLoading,
 }) {
-  const sneakers = [
-    {
-      id: 1,
-      title: "Мужские Кроссовки Nike Blazer Mid Suede",
-      imageUrl: "/img/sneakers/1.jpg",
-      price: 12999,
-    },
-    {
-      id: 2,
-      title: "Мужские Кроссовки Nike Air Max 270",
-      imageUrl: "/img/sneakers/2.jpg",
-      price: 15600,
-    },
-    {
-      id: 3,
-      title: "Мужские Кроссовки Nike Blazer Mid Suede",
-      imageUrl: "/img/sneakers/3.jpg",
-      price: 8499,
-    },
-    {
-      id: 4,
-      title: "Кроссовки Puma X Aka Boku Future Rider",
-      imageUrl: "/img/sneakers/4.jpg",
-      price: 8999,
-    },
-    {
-      id: 5,
-      title: "Мужские Кроссовки Under Armour Curry 8",
-      imageUrl: "/img/sneakers/5.jpg",
-      price: 15199,
-    },
-    {
-      id: 6,
-      title: "Мужские Кроссовки Nike Kyrie 7",
-      imageUrl: "/img/sneakers/6.jpg",
-      price: 11299,
-    },
-    {
-      id: 7,
-      title: "Мужские Кроссовки Jordan Air Jordan 11",
-      imageUrl: "/img/sneakers/7.jpg",
-      price: 10799,
-    },
-    {
-      id: 8,
-      title: "Мужские Кроссовки Nike LeBron XVIII",
-      imageUrl: "/img/sneakers/8.jpg",
-      price: 16499,
-    },
-    {
-      id: 9,
-      title: "Мужские Кроссовки Nike Lebron XVIII Low",
-      imageUrl: "/img/sneakers/9.jpg",
-      price: 13999,
-    },
-    {
-      id: 10,
-      title: "Мужские Кроссовки Nike Blazer Mid Suede",
-      imageUrl: "/img/sneakers/10.jpg",
-      price: 8499,
-    },
-  ]
+  const [sortByPrice, setSortByPrice] = useState("default")
+  const [filters, setFilters] = useState({
+    gender: "all",
+    category: "all",
+    season: "all",
+    color: "all",
+  })
 
-  const renderItems = () => {
-    const filteredItems = sneakers.filter((item) =>
+  const handleFilterChange = (filterType, value) => {
+    if (filterType === "price") {
+      setSortByPrice(value)
+    } else {
+      setFilters((prev) => ({
+        ...prev,
+        [filterType]: value,
+      }))
+    }
+  }
+
+  const filteredItems = items.filter((item) => {
+    return (
+      (filters.gender === "all" || item.gender === filters.gender) &&
+      (filters.category === "all" || item.category === filters.category) &&
+      (filters.season === "all" || item.season === filters.season) &&
+      (filters.color === "all" || item.color === filters.color) &&
       item.title.toLowerCase().includes(searchValue.toLowerCase())
     )
+  })
 
-    return (isLoading ? [...Array(8)] : filteredItems).map((item, index) => (
-      <Card
-        key={index}
-        onFavorite={(obj) => onAddToFavorite(obj)}
-        onPlus={(obj) => onAddToCart(obj)}
-        loading={isLoading}
-        {...item}
-      />
-    ))
-  }
+  const sortedItems = [...filteredItems].sort((a, b) => {
+    if (sortByPrice === "asc") {
+      return a.price - b.price
+    } else if (sortByPrice === "desc") {
+      return b.price - a.price
+    }
+    return 0
+  })
 
   return (
     <div className="content p-40">
@@ -95,23 +55,101 @@ function Home({
           {searchValue ? `Поиск по запросу: "${searchValue}"` : "Все кроссовки"}
         </h1>
         <div className="search-block d-flex">
-          <img src="img/search.svg" alt="Search" />
-          {searchValue && (
-            <img
-              onClick={() => setSearchValue("")}
-              className="clear cu-p"
-              src="img/btn-remove.svg"
-              alt="Clear"
-            />
-          )}
+          <img src="/img/search.svg" alt="Search" />
           <input
             onChange={onChangeSearchInput}
             value={searchValue}
             placeholder="Поиск..."
           />
+          {searchValue && (
+            <img
+              onClick={() => setSearchValue("")}
+              className="clear cu-p"
+              src="/img/btn-remove.svg"
+              alt="Clear"
+            />
+          )}
         </div>
       </div>
-      <div className="d-flex flex-wrap">{renderItems()}</div>
+
+      <div className="filters mb-40">
+        <div className="filter-group">
+          <label>Пол:</label>
+          <select
+            value={filters.gender}
+            onChange={(e) => handleFilterChange("gender", e.target.value)}
+          >
+            <option value="all">Все</option>
+            <option value="male">Мужские</option>
+            <option value="female">Женские</option>
+          </select>
+        </div>
+
+        <div className="filter-group">
+          <label>Категория:</label>
+          <select
+            value={filters.category}
+            onChange={(e) => handleFilterChange("category", e.target.value)}
+          >
+            <option value="all">Все</option>
+            <option value="sport">Спортивные</option>
+            <option value="casual">Повседневные</option>
+          </select>
+        </div>
+
+        <div className="filter-group">
+          <label>Сезон:</label>
+          <select
+            value={filters.season}
+            onChange={(e) => handleFilterChange("season", e.target.value)}
+          >
+            <option value="all">Все</option>
+            <option value="summer">Лето</option>
+            <option value="winter">Зима</option>
+            <option value="spring">Весна</option>
+            <option value="autumn">Осень</option>
+          </select>
+        </div>
+
+        <div className="filter-group">
+          <label>Цвет:</label>
+          <select
+            value={filters.color}
+            onChange={(e) => handleFilterChange("color", e.target.value)}
+          >
+            <option value="all">Все</option>
+            <option value="black">Черный</option>
+            <option value="white">Белый</option>
+            <option value="red">Красный</option>
+            <option value="blue">Синий</option>
+            <option value="green">Зеленый</option>
+          </select>
+        </div>
+
+        <div className="filter-group">
+          <label>Сортировка по цене:</label>
+          <select
+            value={sortByPrice}
+            onChange={(e) => handleFilterChange("price", e.target.value)}
+          >
+            <option value="default">Без сортировки</option>
+            <option value="asc">Сначала дешевые</option>
+            <option value="desc">Сначала дорогие</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="d-flex flex-wrap">
+        {sortedItems.map((item) => (
+          <Card
+            key={item.id}
+            {...item}
+            onFavorite={(obj) => onAddToFavorite(obj)}
+            onPlus={(obj) => onAddToCart(obj)}
+            loading={isLoading}
+          />
+        ))}
+      </div>
     </div>
   )
 }

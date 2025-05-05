@@ -1,64 +1,16 @@
-import React from "react"
-
-import Card from "../components/Card"
+import React, { useContext, useState } from "react"
+import { Link } from "react-router-dom"
 import AppContext from "../context"
+import { useCart } from "../hooks/useCart"
 
 function Orders() {
-  const [orders, setOrders] = React.useState([])
-  const [isLoading, setIsLoading] = React.useState(true)
+  const { cartItems } = useContext(AppContext)
+  const { totalPrice } = useCart()
+  const [orderStatus, setOrderStatus] = useState("")
 
-  React.useEffect(() => {
-    // Фейковые данные, эмулируем заказы (2 заказа по 2 товара)
-    const fakeOrders = [
-      {
-        id: 1,
-        items: [
-          {
-            id: 1,
-            parentId: 1,
-            title: "Кроссовки №1",
-            imageUrl: "img/sneakers/1.jpg",
-            price: 120,
-          },
-          {
-            id: 2,
-            parentId: 2,
-            title: "Кроссовки №2",
-            imageUrl: "/img/sneakers/2.jpg",
-            price: 130,
-          },
-        ],
-      },
-      {
-        id: 2,
-        items: [
-          {
-            id: 3,
-            parentId: 3,
-            title: "Кроссовки №3",
-            imageUrl: "/img/sneakers/3.jpg",
-            price: 140,
-          },
-          {
-            id: 4,
-            parentId: 4,
-            title: "Кроссовки №4",
-            imageUrl: "/img/sneakers/4.jpg",
-            price: 150,
-          },
-        ],
-      },
-    ]
-
-    // Объединяем все товары из заказов в один массив
-    const allItems = fakeOrders.reduce(
-      (acc, order) => [...acc, ...order.items],
-      []
-    )
-
-    setOrders(allItems)
-    setIsLoading(false)
-  }, [])
+  const handleOrder = () => {
+    setOrderStatus("Заказ оформлен")
+  }
 
   return (
     <div className="content p-40">
@@ -66,10 +18,37 @@ function Orders() {
         <h1>Мои заказы</h1>
       </div>
 
-      <div className="d-flex flex-wrap">
-        {(isLoading ? [...Array(8)] : orders).map((item, index) => (
-          <Card key={index} loading={isLoading} {...item} />
+      <div className="cartItems">
+        {cartItems.map((item) => (
+          <div key={item.id} className="cartItem d-flex align-center mb-20">
+            <div
+              style={{ backgroundImage: `url(${item.imageUrl})` }}
+              className="cartItemImg"
+            ></div>
+            <div className="mr-20 flex">
+              <p className="mb-5">{item.title}</p>
+              <b>{item.price} руб.</b>
+            </div>
+          </div>
         ))}
+      </div>
+
+      <div className="cartTotalBlock">
+        <ul>
+          <li>
+            <span>Итого:</span>
+            <div></div>
+            <b>{totalPrice} руб.</b>
+          </li>
+        </ul>
+        <button
+          onClick={handleOrder}
+          className="greenButton"
+          disabled={cartItems.length === 0}
+        >
+          Оформить заказ <img src="/img/arrow.svg" alt="Arrow" />
+        </button>
+        {orderStatus && <div className="notification">{orderStatus}</div>}
       </div>
     </div>
   )
