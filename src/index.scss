@@ -453,18 +453,23 @@ header {
     width: 35px;
     height: 35px;
     border-radius: 8px;
-    transition: background-color 0.2s ease-in-out;
-
-    &:hover {
-      background-color: #f8f8f8;
-    }
+    transition: background-color 0.2s ease-in-out, filter 0.2s ease-in-out;
 
     img {
       width: 25px;
       height: 25px;
+      transition: filter 0.2s ease-in-out;
+    }
+
+    &:hover {
+      background-color: #9d00ff;
+      filter: drop-shadow(0 0 8px rgba(157, 0, 255, 0.8));
+
+      img {
+        filter: brightness(0) invert(1);
+      }
     }
   }
-
   &__content {
     display: flex;
     gap: 50px;
@@ -725,7 +730,7 @@ header {
   }
 
   .moon-icon {
-    left: 8px;
+    left: 7px;
     color: var(--neon-text);
   }
 
@@ -1101,4 +1106,287 @@ header {
   to {
     transform: rotate(360deg);
   }
+}
+
+.promo-button {
+  background: var(--neon-primary);
+  color: var(--neon-surface);
+  border: none;
+  border-radius: 8px;
+  padding: 8px 15px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: var(--neon-glow);
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.order-options {
+  background: var(--neon-surface);
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: var(--neon-glow);
+
+  h3 {
+    color: var(--neon-text);
+    margin: 0 0 15px 0;
+    font-size: 18px;
+  }
+}
+
+.promo-section {
+  .d-flex {
+    gap: 10px;
+  }
+
+  .promo-input {
+    flex: 1;
+    height: 45px;
+    border: 1px solid var(--neon-border);
+    border-radius: 10px;
+    padding: 0 15px;
+    font-size: 14px;
+    background: var(--neon-background);
+    color: var(--neon-text);
+    transition: all 0.3s ease;
+
+    &:focus {
+      border-color: var(--neon-primary);
+      box-shadow: var(--neon-glow);
+      outline: none;
+    }
+  }
+
+  .promo-button {
+    height: 45px;
+    padding: 0 20px;
+    border: 1px solid var(--neon-primary);
+    border-radius: 10px;
+    background: var(--neon-primary);
+    color: var(--neon-surface);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+      box-shadow: var(--neon-glow);
+    }
+
+    &:active {
+      background: darken(#9d00ff, 5%);
+    }
+  }
+
+  .promo-error {
+    margin-top: 10px;
+    color: #ff4d4d;
+    font-size: 14px;
+  }
+
+  .promo-success {
+    margin-top: 10px;
+    color: var(--neon-primary);
+    font-size: 14px;
+    font-weight: 500;
+  }
+}
+
+.delivery-options,
+.payment-options {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.delivery-option,
+.payment-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: var(--neon-background);
+  }
+
+  input[type="radio"] {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--neon-border);
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+
+    &:checked {
+      border-color: var(--neon-primary);
+      background: var(--neon-primary);
+
+      &::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 8px;
+        height: 8px;
+        background: var(--neon-surface);
+        border-radius: 50%;
+      }
+    }
+  }
+
+  span {
+    color: var(--neon-text);
+    font-size: 14px;
+  }
+}
+
+// Кастомный неоновый скроллбар
+::-webkit-scrollbar {
+  width: 10px;
+  background: var(--neon-background);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--neon-primary);
+  border-radius: 8px;
+  box-shadow: 0 0 10px var(--neon-primary);
+  border: 2px solid var(--neon-background);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--neon-secondary);
+  box-shadow: 0 0 16px var(--neon-secondary);
+}
+::-webkit-scrollbar-corner {
+  background: var(--neon-background);
+}
+
+// Firefox
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--neon-primary) var(--neon-background);
+}
+
+// Кастомный неоновый курсор
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 32px;
+  height: 32px;
+  pointer-events: none;
+  border-radius: 50%;
+  background: rgba(157, 0, 255, 0.15);
+  border: 2px solid var(--neon-primary);
+  box-shadow: 0 0 16px 4px var(--neon-primary);
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s,
+    transform 0.08s;
+  mix-blend-mode: lighten;
+}
+
+.custom-cursor.active {
+  background: rgba(0, 255, 231, 0.2);
+  border-color: var(--neon-secondary);
+  box-shadow: 0 0 24px 8px var(--neon-secondary);
+  transform: translate(-50%, -50%) scale(1.2);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+.quantity-selector,
+.cart-item-quantity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.quantity-button {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--neon-primary);
+  background: transparent;
+  color: var(--neon-primary);
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease-in-out;
+}
+
+.quantity-button:hover {
+  background: var(--neon-primary);
+  color: var(--neon-surface);
+  box-shadow: var(--neon-glow);
+}
+
+.quantity-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-color: var(--neon-border);
+  color: var(--neon-border);
+}
+
+.quantity-button:disabled:hover {
+  background: transparent;
+  box-shadow: none;
+}
+
+.quantity-value {
+  min-width: 30px;
+  text-align: center;
+  font-weight: bold;
+  color: var(--neon-text);
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 480px) {
+  .cart-item-quantity {
+    margin-top: 10px;
+  }
+
+  .quantity-button {
+    width: 25px;
+    height: 25px;
+    font-size: 14px;
+  }
+}
+.empty-cart {
+  text-align: center;
+  padding: 40px;
+}
+
+.cart-item-quantity {
+  gap: 10px;
+}
+
+.remove-button {
+  padding-top: 8px;
+  cursor: pointer;
+  border: none;
+  background: none;
+  margin-left: 10px;
+}
+
+.remove-button img {
+  width: 20px;
+  height: 20px;
 }

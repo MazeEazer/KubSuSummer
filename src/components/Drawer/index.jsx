@@ -1,38 +1,21 @@
 import React from "react"
-import axios from "axios"
+import { useNavigate } from "react-router-dom"
 
 import Info from "../Info"
 import { useCart } from "../../hooks/useCart"
 
 import styles from "./Drawer.module.scss"
 
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
-
 function Drawer({ onClose, onRemove, items = [], opened }) {
-  const { cartItems, setCartItems, totalPrice } = useCart()
+  const { totalPrice } = useCart()
   const [orderId, setOrderId] = React.useState(null)
   const [isOrderComplete, setIsOrderComplete] = React.useState(false)
   const [isLoading, setIsLoading] = React.useState(false)
+  const navigate = useNavigate()
 
   const onClickOrder = async () => {
-    try {
-      setIsLoading(true)
-      const { data } = await axios.post("/orders", {
-        items: cartItems,
-      })
-      setOrderId(data.id)
-      setIsOrderComplete(true)
-      setCartItems([])
-
-      for (let i = 0; i < cartItems.length; i++) {
-        const item = cartItems[i]
-        await axios.delete("/cart/" + item.id)
-        await delay(1000)
-      }
-    } catch (error) {
-      alert("Ошибка при создании заказа :(")
-    }
-    setIsLoading(false)
+    navigate("/orders")
+    onClose()
   }
 
   const handleOverlayClick = (e) => {
@@ -52,7 +35,7 @@ function Drawer({ onClose, onRemove, items = [], opened }) {
           <img
             onClick={onClose}
             className="cu-p"
-            src="img/btn-remove.svg"
+            src="/img/btn-remove.svg"
             alt="Close"
           />
         </h2>
@@ -77,7 +60,7 @@ function Drawer({ onClose, onRemove, items = [], opened }) {
                   <img
                     onClick={() => onRemove(obj.id)}
                     className="removeBtn"
-                    src="img/btn-remove.svg"
+                    src="/img/btn-remove.svg"
                     alt="Remove"
                   />
                 </div>
@@ -88,12 +71,7 @@ function Drawer({ onClose, onRemove, items = [], opened }) {
                 <li>
                   <span>Итого:</span>
                   <div></div>
-                  <b>{totalPrice} руб. </b>
-                </li>
-                <li>
-                  <span>Налог 5%:</span>
-                  <div></div>
-                  <b>{(totalPrice / 100) * 5} руб. </b>
+                  <b>{totalPrice.toFixed(2)} руб.</b>
                 </li>
               </ul>
               <button
@@ -101,7 +79,7 @@ function Drawer({ onClose, onRemove, items = [], opened }) {
                 onClick={onClickOrder}
                 className="greenButton"
               >
-                Оформить заказ <img src="img/arrow.svg" alt="Arrow" />
+                Перейти к оформлению <img src="/img/arrow.svg" alt="Arrow" />
               </button>
             </div>
           </div>
@@ -114,7 +92,9 @@ function Drawer({ onClose, onRemove, items = [], opened }) {
                 : "Добавьте хотя бы одну пару кроссовок, чтобы сделать заказ."
             }
             image={
-              isOrderComplete ? "img/complete-order.jpg" : "img/empty-cart.jpg"
+              isOrderComplete
+                ? "/img/complete-order.jpg"
+                : "/img/empty-cart.png"
             }
           />
         )}

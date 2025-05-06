@@ -1,15 +1,18 @@
 import React, { useCallback, useMemo, useEffect, useState } from "react"
-import { Route, Routes, Navigate, useNavigate } from "react-router-dom"
+import { Route, Routes, Navigate } from "react-router-dom"
 import Header from "./components/Header"
 import Drawer from "./components/Drawer"
 import ThemeToggle from "./components/ThemeToggle"
 import AppContext from "./context"
+import { ParallaxProvider } from "react-scroll-parallax"
+import NeonParallaxBackground from "./components/NeonParallaxBackground"
 
 import Home from "./pages/Home"
 import Favorites from "./pages/Favorites"
 import Orders from "./pages/Orders"
 import Product from "./pages/Product"
 import Auth from "./pages/Auth"
+import PromoRoulettePage from "./pages/PromoRoulettePage"
 
 function App() {
   const [items, setItems] = useState([])
@@ -21,7 +24,6 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   useEffect(() => {
-    // Check if user is authenticated
     const auth = localStorage.getItem("isAuthenticated")
     if (auth === "true") {
       setIsAuthenticated(true)
@@ -33,67 +35,67 @@ function App() {
       {
         id: 1,
         title: "Мужские Кроссовки Nike Blazer Mid Suede",
-        imageUrl: "/img/sneakers/1.jpg",
+        imageUrl: "/img/sneakers/1.png",
         price: 12999,
         gender: "male",
         category: "casual",
         season: "all",
-        color: "white",
+        color: "grren",
       },
       {
         id: 2,
-        title: "Мужские Кроссовки Nike Air Max 270",
-        imageUrl: "/img/sneakers/2.jpg",
+        title: "Женские Кроссовки Nike Air Max 270",
+        imageUrl: "/img/sneakers/2.png",
         price: 15600,
-        gender: "male",
+        gender: "female",
         category: "sport",
         season: "summer",
-        color: "black",
+        color: "white",
       },
       {
         id: 3,
         title: "Мужские Кроссовки Nike Blazer Mid Suede",
-        imageUrl: "/img/sneakers/3.jpg",
+        imageUrl: "/img/sneakers/3.png",
         price: 8499,
         gender: "male",
         category: "casual",
         season: "winter",
-        color: "red",
+        color: "white",
       },
       {
         id: 4,
-        title: "Кроссовки Puma X Aka Boku Future Rider",
-        imageUrl: "/img/sneakers/4.jpg",
+        title: "Женские Кроссовки Puma X Aka Boku Future Rider",
+        imageUrl: "/img/sneakers/4.png",
         price: 8999,
-        gender: "male",
+        gender: "female",
         category: "sport",
         season: "summer",
         color: "blue",
       },
       {
         id: 5,
-        title: "Мужские Кроссовки Under Armour Curry 8",
-        imageUrl: "/img/sneakers/5.jpg",
+        title: "Женские Кроссовки Under Armour Curry 8",
+        imageUrl: "/img/sneakers/5.png",
         price: 15199,
         gender: "female",
         category: "sport",
         season: "all",
-        color: "black",
+        color: "yellow",
       },
       {
         id: 6,
         title: "Мужские Кроссовки Nike Kyrie 7",
-        imageUrl: "/img/sneakers/6.jpg",
+        imageUrl: "/img/sneakers/6.png",
         price: 11299,
         gender: "male",
         category: "sport",
         season: "summer",
-        color: "white",
+        color: "black",
       },
       {
         id: 7,
         title: "Мужские Кроссовки Jordan Air Jordan 11",
-        imageUrl: "/img/sneakers/7.jpg",
+        imageUrl: "/img/sneakers/7.png",
         price: 10799,
         gender: "male",
         category: "sport",
@@ -103,7 +105,7 @@ function App() {
       {
         id: 8,
         title: "Мужские Кроссовки Nike LeBron XVIII",
-        imageUrl: "/img/sneakers/8.jpg",
+        imageUrl: "/img/sneakers/8.png",
         price: 16499,
         gender: "male",
         category: "sport",
@@ -113,7 +115,7 @@ function App() {
       {
         id: 9,
         title: "Мужские Кроссовки Nike Lebron XVIII Low",
-        imageUrl: "/img/sneakers/9.jpg",
+        imageUrl: "/img/sneakers/9.png",
         price: 13999,
         gender: "male",
         category: "casual",
@@ -123,12 +125,12 @@ function App() {
       {
         id: 10,
         title: "Мужские Кроссовки Nike Blazer Mid Suede",
-        imageUrl: "/img/sneakers/10.jpg",
+        imageUrl: "/img/sneakers/10.png",
         price: 8499,
         gender: "male",
         category: "casual",
         season: "all",
-        color: "white",
+        color: "green",
       },
     ]
 
@@ -139,14 +141,33 @@ function App() {
   const onAddToCart = useCallback(
     (obj) => {
       const findItem = cartItems.find(
-        (item) => Number(item.parentId) === Number(obj.id)
+        (item) =>
+          Number(item.parentId) === Number(obj.id) &&
+          item.size === (obj.size || "default")
       )
       if (findItem) {
         setCartItems((prev) =>
-          prev.filter((item) => Number(item.parentId) !== Number(obj.id))
+          prev.map((item) =>
+            Number(item.parentId) === Number(obj.id) &&
+            item.size === (obj.size || "default")
+              ? {
+                  ...item,
+                  quantity: item.quantity + (obj.quantity || 1),
+                }
+              : item
+          )
         )
       } else {
-        setCartItems((prev) => [...prev, { ...obj, id: Date.now() }])
+        setCartItems((prev) => [
+          ...prev,
+          {
+            ...obj,
+            id: Date.now(),
+            parentId: obj.id,
+            size: obj.size || "default",
+            quantity: obj.quantity || 1,
+          },
+        ])
       }
     },
     [cartItems]
@@ -157,7 +178,16 @@ function App() {
       prev.filter((item) => Number(item.id) !== Number(id))
     )
   }, [])
+  useEffect(() => {
+    const savedCart = localStorage.getItem("cartItems")
+    if (savedCart) {
+      setCartItems(JSON.parse(savedCart))
+    }
+  }, [])
 
+  useEffect(() => {
+    localStorage.setItem("cartItems", JSON.stringify(cartItems))
+  }, [cartItems])
   const onAddToFavorite = useCallback(
     (obj) => {
       const exists = favorites.find((fav) => fav.id === obj.id)
@@ -175,8 +205,10 @@ function App() {
   }, [])
 
   const isItemAdded = useCallback(
-    (id) => {
-      return cartItems.some((obj) => Number(obj.parentId) === Number(id))
+    (id, size = "default") => {
+      return cartItems.some(
+        (obj) => Number(obj.parentId) === Number(id) && obj.size === size
+      )
     },
     [cartItems]
   )
@@ -193,6 +225,7 @@ function App() {
       setCartItems,
       isAuthenticated,
       setIsAuthenticated,
+      onRemoveItem,
     }),
     [
       items,
@@ -202,54 +235,72 @@ function App() {
       onAddToFavorite,
       onAddToCart,
       isAuthenticated,
+      onRemoveItem,
     ]
   )
 
   return (
-    <AppContext.Provider value={contextValue}>
-      <div className="wrapper clear">
-        <ThemeToggle />
-        <Drawer
-          items={cartItems}
-          onClose={() => setCartOpened(false)}
-          onRemove={onRemoveItem}
-          opened={cartOpened}
-        />
-
-        <Header onClickCart={() => setCartOpened(true)} />
-
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <Home
-                items={items}
-                cartItems={cartItems}
-                searchValue={searchValue}
-                setSearchValue={setSearchValue}
-                onChangeSearchInput={onChangeSearchInput}
-                onAddToFavorite={onAddToFavorite}
-                onAddToCart={onAddToCart}
-                isLoading={isLoading}
-              />
-            }
+    <ParallaxProvider>
+      <NeonParallaxBackground />
+      <AppContext.Provider value={contextValue}>
+        <div className="wrapper clear">
+          <ThemeToggle />
+          <Drawer
+            items={cartItems}
+            onClose={() => setCartOpened(false)}
+            onRemove={onRemoveItem}
+            opened={cartOpened}
           />
-          <Route path="/favorites" element={<Favorites />} />
-          <Route
-            path="/orders"
-            element={
-              isAuthenticated ? (
-                <Orders />
-              ) : (
-                <Navigate to="/auth" state={{ from: "/orders" }} replace />
-              )
-            }
-          />
-          <Route path="/product/:id" element={<Product />} />
-          <Route path="/auth" element={<Auth />} />
-        </Routes>
-      </div>
-    </AppContext.Provider>
+
+          <Header onClickCart={() => setCartOpened(true)} />
+
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <Home
+                  items={items}
+                  cartItems={cartItems}
+                  searchValue={searchValue}
+                  setSearchValue={setSearchValue}
+                  onChangeSearchInput={onChangeSearchInput}
+                  onAddToFavorite={onAddToFavorite}
+                  onAddToCart={onAddToCart}
+                  isLoading={isLoading}
+                />
+              }
+            />
+            <Route path="/favorites" element={<Favorites />} />
+            <Route
+              path="/orders"
+              element={
+                isAuthenticated ? (
+                  <Orders />
+                ) : (
+                  <Navigate to="/auth" state={{ from: "/orders" }} replace />
+                )
+              }
+            />
+            <Route path="/product/:id" element={<Product />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route
+              path="/promo-roulette"
+              element={
+                isAuthenticated ? (
+                  <PromoRoulettePage />
+                ) : (
+                  <Navigate
+                    to="/auth"
+                    state={{ from: "/promo-roulette" }}
+                    replace
+                  />
+                )
+              }
+            />
+          </Routes>
+        </div>
+      </AppContext.Provider>
+    </ParallaxProvider>
   )
 }
 

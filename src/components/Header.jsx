@@ -29,7 +29,7 @@ function Header(props) {
       <ul className="d-flex">
         <li onClick={props.onClickCart} className="cu-p">
           <img width={18} height={18} src="/img/cart.svg" alt="Корзина" />
-          <span>{totalPrice} руб.</span>
+          <span>{totalPrice.toFixed(2)} руб.</span>
         </li>
         <li className="cu-p">
           <Link to="/favorites">
@@ -46,6 +46,9 @@ function Header(props) {
                   src="/img/user.svg"
                   alt="Пользователь"
                 />
+              </Link>
+              <Link to="/promo-roulette" className="mr-20">
+                <button className="promo-button">Рулетка промокодов</button>
               </Link>
               <button onClick={handleLogout} className="logout-button">
                 Выйти

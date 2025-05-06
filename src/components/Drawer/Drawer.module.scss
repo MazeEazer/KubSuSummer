@@ -81,10 +81,6 @@
   --icon-invert: 0;
 }
 
-[data-theme="dark"] {
-  --icon-invert: 1;
-}
-
 @media (max-width: 768px) {
   .drawer {
     width: 100%;

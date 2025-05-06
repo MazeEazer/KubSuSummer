@@ -2,8 +2,6 @@ import React from "react"
 import { useNavigate } from "react-router-dom"
 import ContentLoader from "react-content-loader"
 
-import AppContext from "../../context"
-
 import styles from "./Card.module.scss"
 
 function Card({
@@ -12,19 +10,12 @@ function Card({
   imageUrl,
   price,
   onFavorite,
-  onPlus,
   favorited = false,
   loading = false,
 }) {
   const navigate = useNavigate()
-  const { isItemAdded } = React.useContext(AppContext)
   const [isFavorite, setIsFavorite] = React.useState(favorited)
   const obj = { id, parentId: id, title, imageUrl, price }
-
-  const onClickPlus = (e) => {
-    e.stopPropagation()
-    onPlus(obj)
-  }
 
   const onClickFavorite = (e) => {
     e.stopPropagation()
@@ -70,16 +61,6 @@ function Card({
               <span>Цена:</span>
               <b>{price} руб.</b>
             </div>
-            {onPlus && (
-              <img
-                className={styles.plus}
-                onClick={onClickPlus}
-                src={
-                  isItemAdded(id) ? "img/btn-checked.svg" : "img/btn-plus.svg"
-                }
-                alt="Plus"
-              />
-            )}
           </div>
         </>
       )}

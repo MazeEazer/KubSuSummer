@@ -29,6 +29,11 @@ function Home({
     }
   }
 
+  const handleResetFilters = () => {
+    setFilters({ gender: "all", category: "all", season: "all", color: "all" })
+    setSortByPrice("default")
+  }
+
   const filteredItems = items.filter((item) => {
     return (
       (filters.gender === "all" || item.gender === filters.gender) &&
@@ -123,6 +128,7 @@ function Home({
             <option value="red">Красный</option>
             <option value="blue">Синий</option>
             <option value="green">Зеленый</option>
+            <option value="yellow">Желтый</option>
           </select>
         </div>
 
@@ -137,6 +143,14 @@ function Home({
             <option value="desc">Сначала дорогие</option>
           </select>
         </div>
+
+        <button
+          className="sort-button"
+          style={{ marginTop: 20 }}
+          onClick={handleResetFilters}
+        >
+          Сбросить фильтры
+        </button>
       </div>
 
       <div className="d-flex flex-wrap">
