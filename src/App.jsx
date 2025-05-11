@@ -11,7 +11,7 @@ import Home from "./pages/Home"
 import Favorites from "./pages/Favorites"
 import Orders from "./pages/Orders"
 import Product from "./pages/Product"
-import Auth from "./pages/Auth"
+import Registration from "./pages/Registration"
 import PromoRoulettePage from "./pages/PromoRoulettePage"
 
 function App() {
@@ -282,7 +282,7 @@ function App() {
               }
             />
             <Route path="/product/:id" element={<Product />} />
-            <Route path="/auth" element={<Auth />} />
+            <Route path="/auth" element={<Registration />} />
             <Route
               path="/promo-roulette"
               element={
